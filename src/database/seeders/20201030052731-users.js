@@ -11,8 +11,8 @@ module.exports = {
       {
         name: 'João Silva',
         phone: 51999999999,
-        balance: 500.00,
-        limit: 500.00,
+        balance: 0,
+        limit: 100.00,
         cpf: '04111144455',
       },
       {

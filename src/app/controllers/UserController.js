@@ -78,15 +78,16 @@ class UserController {
       const user = await User.findByPk(transactionJSON.receiverId);
       if(Number(user.limit) < 500){
         if(Number(user.limit) + Number(transactionJSON.value) > 500) {
-          const rest = 500 - Number(user.limit);
+          const rest = Number(transactionJSON.value) - (500 - Number(user.limit));
           user.limit = 500;
-          user.balance = user.balance + rest;
+          user.balance = Number(user.balance) + rest;
        }else {
          user.limit = Number(user.limit) + Number(transactionJSON.value);
        }
       } else {
       user.balance = await Number(user.balance) + Number(transactionJSON.value);
       }
+      console.log(user);
       const response = await user.update(user.dataValues, {
         where: {
           id: transactionJSON.receiverId

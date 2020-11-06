@@ -69,7 +69,6 @@ class TransactionController {
   async newTransaction(transactionJSON) {
     await UserController.withdrawMoney(transactionJSON);
     await UserController.receiveMoney(transactionJSON);
-    console.log(this.createTransactionBody(transactionJSON));
     const transaction = await Transaction.create(this.createTransactionBody(transactionJSON));
     return transaction;
   }

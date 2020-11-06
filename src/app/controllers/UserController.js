@@ -23,7 +23,7 @@ class UserController {
 
   async store(req, res) {
     try {
-      const user = await User.create(req.body);
+      const user = await User.create({balance: 1000.00, limit: 500.00, ...req.body});
 
       return res.json(user);
     } catch (err) {
@@ -57,7 +57,7 @@ class UserController {
 
   async withdrawMoney(transactionJSON) {
     const user = await User.findByPk(transactionJSON.senderId);
-    user.balance = user.balance - transactionJSON.amount;
+    user.balance = Number(user.balance) - Number(transactionJSON.value);
     const newUser = user;
     const response = await user.update(newUser.dataValues, {
       where: {
@@ -69,11 +69,11 @@ class UserController {
 
   async receiveMoney(transactionJSON) {
     const user = await User.findByPk(transactionJSON.receiverId);
-    user.balance = Number(user.balance) + Number(transactionJSON.amount);
+    user.balance = await Number(user.balance) + Number(transactionJSON.value);
     const newUser = user;
     const response = await user.update(newUser.dataValues, {
       where: {
-        id: transactionJSON.userId
+        id: transactionJSON.receiverId
       }});
   
     return response;

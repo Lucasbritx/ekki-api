@@ -12,12 +12,13 @@ module.exports = {
       allowNull: false,
       type: Sequelize.STRING,
     },
-    email: {
-      allowNull: false,
-      type: Sequelize.STRING,
-      unique: true,
-    },
     balance: {
+      defaultValue: 1000.00,
+      allowNull: false,
+      type: Sequelize.NUMERIC(1000,2),
+    },
+    limit: {
+      defaultValue: 500.00,
       allowNull: false,
       type: Sequelize.NUMERIC(1000,2),
     },

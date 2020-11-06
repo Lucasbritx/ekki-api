@@ -21,4 +21,15 @@ router.post('/', async (req, res, next) => {
     }
   });
 
+  router.get('/extract/:id', async (req, res, next) => {
+    try {
+      const extract = await TransactionController.getExtract(req.params.id);
+      res.status(200).send(extract);
+    } catch (e) {
+      console.log(`transaction-get-extract/-error: ${e.message}`);
+      next(e);
+    }
+  });
+
+
 module.exports = router;

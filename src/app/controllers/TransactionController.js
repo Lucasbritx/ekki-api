@@ -1,5 +1,7 @@
 const { Transaction } = require('../models');
 const UserController = require('../controllers/UserController');
+const { Op } = require("sequelize");
+const dayjs = require('dayjs');
 
 
 class TransactionController {
@@ -57,11 +59,34 @@ class TransactionController {
     }
   }
 
-  async newTransaction(transactionJSON) {
-    const sender = await UserController.withdrawMoney(transactionJSON);
-    const receiver = await UserController.receiveMoney(transactionJSON);
-    return [sender, receiver];
+  createTransactionBody(t) {
+    return {
+      ...t,
+      transactionDate: dayjs().valueOf(),
+    }
   }
+
+  async newTransaction(transactionJSON) {
+    await UserController.withdrawMoney(transactionJSON);
+    await UserController.receiveMoney(transactionJSON);
+    console.log(this.createTransactionBody(transactionJSON));
+    const transaction = await Transaction.create(this.createTransactionBody(transactionJSON));
+    return transaction;
+  }
+
+  async getExtract(userId) {
+    const user = await Transaction.findAll({
+      where: {
+        [Op.or]: [
+          { senderId: userId },
+          { receiverId: userId }
+        ]
+      }
+    })
+  
+    return user;
+  }
+
 }
 
 module.exports = new TransactionController();

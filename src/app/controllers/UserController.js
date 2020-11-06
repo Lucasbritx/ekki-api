@@ -87,7 +87,6 @@ class UserController {
       } else {
       user.balance = await Number(user.balance) + Number(transactionJSON.value);
       }
-      console.log(user);
       const response = await user.update(user.dataValues, {
         where: {
           id: transactionJSON.receiverId

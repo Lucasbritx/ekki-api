@@ -67,10 +67,14 @@ class TransactionController {
   }
 
   async newTransaction(transactionJSON) {
-    await UserController.withdrawMoney(transactionJSON);
-    await UserController.receiveMoney(transactionJSON);
-    const transaction = await Transaction.create(this.createTransactionBody(transactionJSON));
-    return transaction;
+    try {
+      await UserController.withdrawMoney(transactionJSON);
+      await UserController.receiveMoney(transactionJSON);
+      const transaction = await Transaction.create(this.createTransactionBody(transactionJSON));
+      return transaction;
+    } catch (error) {
+      throw error;
+    }
   }
 
   async getExtract(userId) {

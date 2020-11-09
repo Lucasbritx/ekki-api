@@ -1,4 +1,7 @@
 const { User } = require('../models');
+const EKKIError = require('../middlewares/error/EKKIError');
+
+const INSUFFICIENT_FUNDS = 'Saldo insuficiente';
 
 class UserController {
   async index(req, res) {
@@ -56,7 +59,11 @@ class UserController {
   }
   
   async withdrawMoney(transactionJSON) {
+    try {
     const user = await User.findByPk(transactionJSON.senderId);
+    if((Number(user.balance) + Number(user.limit)) < Number(transactionJSON.value)){
+      throw new Error(INSUFFICIENT_FUNDS);
+    }
     if((Number(user.balance) - Number(transactionJSON.value)) < 0){
       const rest = Number(transactionJSON.value) - Number(user.balance);
       if(Number(user.limit) - rest >= 0){
@@ -72,6 +79,9 @@ class UserController {
       }});
       
       return response;
+    } catch (error) {
+      throw error;
+    }
     }
     
     async receiveMoney(transactionJSON) {
